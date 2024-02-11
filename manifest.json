@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "Website blocker!",
+    "description": "A website blocker for higher productivity!",
+    "version": "1.0",
+    "action": {
+      "default_popup": "hello.html",
+      "default_icon": "Hourglass_icon.png"
+    }
+  }
