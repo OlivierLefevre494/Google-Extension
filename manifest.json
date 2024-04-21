@@ -3,8 +3,21 @@
     "name": "Website blocker!",
     "description": "A website blocker for higher productivity!",
     "version": "1.0",
+    "background": {
+      "service_worker": "background.js",
+      "type": "module"
+    },
+    "host_permissions": [
+      "http://*/*",
+      "https://*/*"
+    ],
+    "permissions": [
+      "tabs",
+      "scripting",
+      "storage"
+    ],
     "action": {
-      "default_popup": "hello.html",
+      "default_popup": "popup/popup.html",
       "default_icon": "Hourglass_icon.png"
     }
   }

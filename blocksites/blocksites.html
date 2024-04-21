@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="blocksites.css">
+<link rel="stylesheet" href="../main.css">
+<html>
+    <body>
+      <div class="popup" id="popup">
+        <div class="closepopup" id="closepopup"></div>
+        <div><p>What website/category do you want to add?</p></div>
+        <div style="display: flex; justify-content: space-evenly; height: 70%; width: 100%;"> 
+          <div style="display: flex; flex-direction: column; width: 50%; align-items: center; justify-content: space-evenly;">
+            <p>Categories</p>
+            <div style="overflow-y: auto; background-color: rgb(142, 64, 64); width: 100%; display:flex; flex-direction:column; justify-content: flex-start; align-items: flex-start;" id="premadecategories">
+              <div class="blockeditemdiv2"> <div class="remove"></div> <p class="websitenamepop">Instagram.com</p> </div>
+              <div class="blockeditemdiv2"> <div class="remove"></div> <p class="websitenamepop">funcats.com</p>  </div>
+              <div class="blockeditemdiv2"> <div class="remove"></div> <p class="websitenamepop">funcats.com</p> </div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; width: 50%; align-items: center; justify-content: space-evenly;">
+            <p>Specific website</p>
+            <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+              <input type="text" id="inputurl" placeholder="Website url"></input>
+              <button id="addwebsite">Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin:0; height: 100%; width: 100%;">
+        <div class="sidebar">
+          <a href="../blocksites/blocksites.html">Block sites</a>
+          <a href="../schedule/schedule.html">Schedule</a>
+          <a href="../timelimit/timelimit.html">Time limit</a>
+          <a href="../timerpage/timerpage.html">Timer</a>
+          <a href="../analytics/analytics.html">Analytics</a>
+        </div>
+      <div class="main-content">
+        <div class="title"><p>List of blocked websites/categories</p></div>
+        <div class="list">
+          <div style="overflow-y: auto; background-color: rgb(142, 64, 64); flex-grow:1; display:flex; flex-direction:column; justify-content: flex-start; align-items: center;" id="listofwebsites">
+          </div>
+          <div>
+            <div class="editblocklist">
+              <button id="addnew">Add new</button>
+            </div>
+            <div class="editblocklist">
+              <button id="savechanges" >SAVE CHANGES</button>
+            </div>
+          </div>
+        </div>
+        <div class="options">
+          <div style="background-color: aqua; display: flex; justify-content: center;"><input type="checkbox" name="" id=""><p>Enable password protection</p></div>
+          <div style="background-color: aqua; display: flex; justify-content: center;"><input type="checkbox" name="" id=""><p>Block all but this website</p></div>
+        </div>
+      </div>
+    </div>
+        <script src="blocksites.js"></script>
+    </body>
+</html>

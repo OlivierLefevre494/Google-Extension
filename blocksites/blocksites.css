@@ -1,0 +1,109 @@
+body {
+    background-color: white;
+  display: flex;
+  justify-content: space-between;
+  margin:0;
+}
+
+.sidebar {
+ background-color: blue;
+  width: 100px;
+  flex-shrink:0;
+}
+
+.main-content { 
+  background-color: grey;
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  align-items: center;
+}
+
+.list {
+  height: 50%;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title {
+  background-color: rgb(191, 149, 149);
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.remove {
+  background-color: red;
+  height: 50px;
+  width: 50px;
+}
+
+.websitename {
+  text-decoration: solid;
+  font-weight: bold;
+  font-family:'Times New Roman', Times, serif
+}
+
+.websitenamepop {
+  text-decoration: solid;
+  font-weight: bold;
+  font-family:'Times New Roman', Times, serif  
+}
+
+.blockeditemdiv {
+  display: flex; 
+  align-items: center;
+  align-self: flex-start; 
+  width: 100%; 
+  justify-content: space-between;
+}
+
+.blockeditemdiv2 {
+  align-items: center;
+  display: flex; 
+  align-self: flex-start; 
+  width: 100%; 
+  justify-content: flex-start;
+}
+
+.blockeditemdiv2:hover {
+  background-color: grey
+}
+
+.editblocklist {
+  display:flex; 
+  justify-content: space-evenly; 
+  background-color: bisque; 
+  align-items:center; 
+  padding: 10px;
+}
+
+.popup {
+  filter: blur(0);
+  height: 300px;
+  width: 500px;
+  visibility: hidden;
+  position: absolute;
+  background-color: yellowgreen;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  left:calc(50% + 50px);
+  top: 50%;
+  transform:translate(-50%,-50%);
+  padding: 20px;
+}
+
+.closepopup {
+  height: 15px;
+  width: 15px;
+  background-color: red;
+  position: absolute;
+  right: 0;
+  top: 0;
+}

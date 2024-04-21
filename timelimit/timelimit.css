@@ -1,0 +1,170 @@
+body {
+    background-color: white;
+  display: flex;
+  justify-content: space-between;
+  margin:0;
+}
+
+.sidebar {
+ background-color: blue;
+  width: 100px;
+  flex-shrink:0;
+}
+
+.maincontent { 
+  background-color: grey;
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rows {
+  display: flex;
+  background-color: antiquewhite;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+ 
+.groups {
+  max-width: 30%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.rowcontainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  height: 80%;
+}
+
+.item {
+  border-color: black;
+  flex-grow: 1;
+  border-style:solid;
+  border-bottom: none;
+  border-right: none;
+  width: calc(100% - 1.5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom {
+  border-bottom-style: solid;
+}
+
+.right {
+  border-right-style: solid;
+  width: calc(100% - 3px);
+}
+
+.editblocklist {
+  display:flex; 
+  justify-content: space-evenly; 
+  background-color: bisque; 
+  align-items:center; 
+  padding: 10px;
+}
+
+.title {
+  background-color: rgb(31, 181, 128);
+}
+
+.popup {
+  filter: blur(0);
+  height: 65%;
+  width: 80%;
+  visibility: hidden;
+  position: absolute;
+  background-color: yellowgreen;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  left:calc(50% + 50px);
+  top: 50%;
+  transform:translate(-50%,-50%);
+  padding: 20px;
+}
+
+.closepopup {
+  height: 15px;
+  width: 15px;
+  background-color: red;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.blockeditemdiv2 {
+  align-items: center;
+  display: flex; 
+  align-self: flex-start; 
+  width: 100%; 
+  justify-content: flex-start;
+}
+
+.blockeditemdiv3 {
+  align-items: center;
+  display: flex; 
+  align-self: flex-start; 
+  width: 100%; 
+  justify-content: space-between;
+}
+
+.blockeditemdiv2:hover {
+  background-color: grey
+}
+
+.remove {
+  height: 50px;
+  width: 50px;
+  background-color: rgb(95, 41, 41);
+}
+
+
+.option1:hover {
+  background-color: rgb(47, 150, 42);
+}
+
+.option2:hover {
+  background-color: rgb(47, 150, 42);
+}
+
+.option3:hover {
+  background-color: rgb(47, 150, 42);
+}
+
+.option1 {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.option2 {
+  flex-grow:2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.option3 {
+  flex-grow:1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

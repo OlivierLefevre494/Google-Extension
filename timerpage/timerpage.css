@@ -1,0 +1,17 @@
+body {
+    background-color: white;
+  display: flex;
+  justify-content: space-between;
+  margin:0;
+}
+
+.sidebar {
+ background-color: blue;
+  width: 100px;
+  flex-shrink:0;
+}
+
+.main-content { 
+  background-color: grey;
+  flex-grow: 1;
+}
