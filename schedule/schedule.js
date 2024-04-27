@@ -25,14 +25,16 @@ function OpenPopup() {
     document.getElementById("popup").style.visibility='visible';
 }
 
-function ShowOption1() {
-    document.getElementById("option1display").style.display = 'flex'
-    document.getElementById("option2display").style.display = 'none'
-}
-
 function ShowOption2() {
     document.getElementById("option2display").style.display = 'flex'
     document.getElementById("option1display").style.display = 'none'
+    document.getElementById("option3display").style.display = 'none'
+}
+
+function ShowOption3() {
+    document.getElementById("option2display").style.display = 'none'
+    document.getElementById("option1display").style.display = 'none'
+    document.getElementById("option3display").style.display = 'flex'
 }
 
 function AddWebsiteSpecific() {
@@ -101,10 +103,7 @@ function SubmitGroup() {
                 //reset groupname and add group name to table
                 document.getElementsByClassName("websitenamepop").length!=0
                 document.getElementById('groupname').value = ''
-                document.getElementById('duration-input').value = ''
                 AddGroupTitle(groupnamevalue, index)
-                AddTimeLimit(limit)
-                AddTimeLeft(limit, urllist)
                 grouplist[groupnamevalue] = urllist
 
                 //reset main div
