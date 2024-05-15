@@ -5,13 +5,64 @@ document.getElementById("submitgroup").addEventListener("click",SubmitGroup)
 document.getElementById("option1").addEventListener("click", ShowOption1)
 document.getElementById("option2").addEventListener("click", ShowOption2)
 document.getElementById('savechanges').addEventListener("click", SaveChanges)
+document.getElementById('option1main').addEventListener("click", ShowGroups)
+document.getElementById('option2main').addEventListener("click", ShowSchedule)
 
+      document.addEventListener('DOMContentLoaded', function() {
+        let calendar;
+        var calendarEl = document.getElementById('calendar');
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            eventMouseEnter: function(info) {
+                info.el.style.borderStyle = 'solid';
+                info.el.style.borderColor = 'red';
+            },
+            eventMouseLeave: function(info) {
+                info.el.style.borderColor = 'black';
+            },
+            eventClick: function(info) {
+                info.event.remove()
+              },
+            initialView: 'timeGridWeek',
+            dayHeaderFormat: {weekday: 'long'},
+            firstDay: 1,
+            slotDuration: '00:30:00',
+            slotLabelFormat: {hours:1},
+            dayHeaders: true,
+            nowIndicator: false,
+            slotLabelFormat: {
+                hour: 'numeric',
+                minute: '2-digit',
+                omitZeroMinute: true,
+                meridiem: 'short'
+              },
+            headerToolbar: {
+                right: '',
+                center: '',
+                left:''
+              },
+              
+            editable: true,
+            height:"100%",
+            droppable: true
+        });
+        $(calendarEl).data('fullCalendarObj',calendar);
+        calendar.render()
+        globalThis.CalendarInstance = $('#calendar').data('fullCalendarObj');
+      });
+let draggableEl = document.getElementById("drag")
+let draggable = new FullCalendar.Draggable(draggableEl,
+    {
+        eventData: {
+            id:'a',
+            title: 'my event',
+            duration: '01:00'
+          }
+    });
 
 const categorylist = {'social media' : ["instagram","twitter.com", "X.com", "facebook.com"]}
 grouplist = {}
 
 AddCategories()
-LoadState()
 
 function ClosePopup() {
     document.getElementById("popup").style.visibility='hidden';
@@ -25,17 +76,28 @@ function OpenPopup() {
     document.getElementById("popup").style.visibility='visible';
 }
 
+function ShowOption1() {
+    document.getElementById("option2display").style.display = 'none'
+    document.getElementById("option1display").style.display = 'flex'
+}
+
 function ShowOption2() {
     document.getElementById("option2display").style.display = 'flex'
     document.getElementById("option1display").style.display = 'none'
-    document.getElementById("option3display").style.display = 'none'
 }
 
-function ShowOption3() {
-    document.getElementById("option2display").style.display = 'none'
-    document.getElementById("option1display").style.display = 'none'
-    document.getElementById("option3display").style.display = 'flex'
+function ShowSchedule() {
+    document.getElementById('listofwebsites').style.display='none'
+    document.getElementById('calendarview').style.display='flex'
+    LoadDraggables()
 }
+
+function ShowGroups() {
+    document.getElementById('listofwebsites').style.display='flex'
+    document.getElementById('calendarview').style.display='none'
+    GetMenuTitles()
+}
+
 
 function AddWebsiteSpecific() {
     var websiteurl = document.getElementById("addwebsite").previousElementSibling.value.trim()
@@ -183,6 +245,9 @@ function SaveChanges() {
         }
         x = x + 1
     }
+    let events = CalendarInstance.getEvents()
+    console.log(events)
+    chrome.storage.local.set({'schedule': events})
     chrome.storage.local.set({'blockedgroupsschedule': blocked})
     console.log(blocked)
 }
@@ -208,7 +273,59 @@ function LoadState() {
             AddGroupTitle(currenttitle, 0)
             x = x+1
         }
+        LoadDraggables()
     })
+}
+
+function LoadDraggables() {
+    // Load the titles of the draggable elements in the menu
+    var groupnames = GetGroupNames()
+    // Check if the group names have already been loaded into the menu
+    var menutitles = GetMenuTitles()
+    
+    if (menutitles!=0) {
+        groupnames = groupnames.filter( function( el ) {
+            return menutitles.indexOf( el ) < 0;
+          } );
+    }
+    if (groupnames!=[]) {
+        for (let x in groupnames) {
+            AddDraggableElement(groupnames[x])
+        }
+    }
+}
+
+function AddDraggableElement(groupname) {
+    // adding each draggable element
+    let menu = document.getElementById("draggableelements")
+    let newDraggablediv = document.createElement('div')
+    let newDraggableText = document.createElement('p')
+    newDraggableText.classList.add('MenuTitle')
+    newDraggableText.innerText = groupname
+    newDraggablediv.appendChild(newDraggableText)
+    menu.appendChild(newDraggablediv)
+    new FullCalendar.Draggable(newDraggablediv,{
+        eventData: {
+            id:groupname,
+            title: groupname,
+            duration: '01:00'
+          }
+    })
+}
+
+function GetMenuTitles() {
+    let menups = document.getElementsByClassName('MenuTitle')
+    if (menups.length==0) {
+        return 0
+    } else {
+        titles = []
+        x = 0 
+        while (x<menups.length) {
+            titles.push(menups[x].innerText)
+            x = x+1
+        }
+        return titles
+    }
 }
 
 function arrayEquals(a, b) {
@@ -238,3 +355,4 @@ function arrayEquals(a, b) {
     }
 
   }
+

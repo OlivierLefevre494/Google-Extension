@@ -148,7 +148,11 @@ function SubmitGroup() {
                 document.getElementsByClassName("websitenamepop").length!=0
                 document.getElementById('groupname').value = ''
                 AddGroupTitle(groupnamevalue, index)
+                console.log("---------TESTING---------")
+                console.log(grouplist)
                 grouplist[groupnamevalue.trim()] = urllist
+                console.log(groupnamevalue)
+                console.log(urllist)
                 console.log(grouplist)
                 timelimitlist[groupnamevalue.trim()] = limit
                 document.getElementById('duration-input').value = "00:00:00"
@@ -264,9 +268,9 @@ function AddTimeLeft(value, index, urllist) {
 }
 
 function SaveChanges() {
-    console.log(grouplist)
     blocked=[]
     var groupnames = GetGroupNames()
+    console.log(grouplist)
     var timelimits = GetTimeLimits()
     var timeleft = GetTimeLeft()
     x = 0
@@ -325,8 +329,6 @@ async function UpdateState() {
                     }
                     x = x+1
                 }
-                grouplist = {}
-                timelimitlist = {}
                 grouplist[currenttitle] = listofurls
                 timelimitlist[currenttitle] = currenttimelimit
                 AddGroupTitle(currenttitle,index)
@@ -423,11 +425,11 @@ function arrayEquals(a, b) {
                     duplicatecheck = false
                 }
                 x=x+1
+            }
             if (duplicatecheck==false){
                 return false
             } else {
                 return true
-            }
             }
         } else{
             return false

@@ -36,14 +36,13 @@ flex-shrink:0;
 }
 
 .list {
-  height: 50%;
+  height: 70%;
   width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 .popup {
-  filter: blur(0);
   height: 65%;
   width: 80%;
   visibility: hidden;
@@ -127,4 +126,61 @@ flex-shrink:0;
 
 .addnewblock:hover {
   background-color: rgb(70, 69, 69);
+}
+
+#option1main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color:aliceblue;
+}
+
+#option1main:hover {
+  background-color:rgb(102, 84, 84)
+}
+
+#option2main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color:aliceblue;
+}
+
+#option2main:hover {
+  background-color:rgb(102, 84, 84)
+}
+
+.groupview { 
+  overflow-y: auto; 
+  background-color: rgb(142, 64, 64); 
+  flex-grow:1; 
+  display:none; 
+  flex-direction:column; 
+  justify-content: flex-start; 
+  align-items: center;
+}
+
+.calendarview {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-grow: 1;
+}
+
+.dragelementsmenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: auto;
+  height: 100%;
+  align-items: center;
+}
+
+#calendar {
+  flex-grow:1
 }

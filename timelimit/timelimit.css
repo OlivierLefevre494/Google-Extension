@@ -83,7 +83,6 @@ body {
 }
 
 .popup {
-  filter: blur(0);
   height: 65%;
   width: 80%;
   visibility: hidden;

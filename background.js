@@ -5,7 +5,9 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
         chrome.storage.local.set({"blocked" : []})
         var date = Date.now()
         chrome.storage.local.set({"websiteusage": {}})
+        chrome.storage.local.set({"schedule" : ''})
         chrome.storage.local.set({"blockedgroups" : []})
+        chrome.storage.local.set({"blockedgroupsschedule" : []})
         chrome.storage.local.set({"audible" : []})
         chrome.tabs.create({
             url: "onboarding.html"
@@ -68,7 +70,7 @@ chrome.storage.local.get("websiteusage").then((results) => {
         return tab;
       }
 
-     async function LoopThrough(newactive, currentdictionary,starttime) {
+     async function LoopThrough(newactive,starttime) {
         await sleep(100)
         //adds new session which is interval of 2 dates
         if (newactive in currentdictionary) {
@@ -123,21 +125,24 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   //      }
   //  })
 //})
+
 let audible = []
 async function AudibleTabs() {
     let i = 0
     while (i<1000) {
         chrome.tabs.query({audible:true}, function(tabs) {
+            console.log(tabs)
             chrome.storage.local.get("blockedgroups").then((results)=> {
                 let blocked = CheckTimeLimits(results["blockedgroups"])
-                console.log(tabs)
                 let audible2 = []
                 var time = Date.now()
                 for (let x in tabs) {
                     CheckForBlocked(tabs[x]["url"], blocked, tabs[x].id)
                     if (tabs[x].active == false) {
+                        if (!audible.includes(tabs[x])) {
+                            BackgroundLoopThrough(tabs[x].url, currentdictionary, time)
+                        }
                         audible2.push(tabs[x].url)
-                        BackgroundLoopThrough(tabs[x].url, currentdictionary, time)
                     }
                 }
                 audible=audible2
@@ -159,12 +164,12 @@ async function ActiveTab() {
             let blocked = CheckTimeLimits(results["blockedgroups"])
             let active2 = []
             var time = Date.now()
-            console.log(tabs)
+            console.log(blocked)
             for (let x in tabs) {
                 CheckForBlocked(tabs[x]["url"], blocked, tabs[x].id)
                 active2.push(tabs[x]["url"])
                 if (!active.includes(tabs[x]["url"])) {
-                    LoopThrough(tabs[x]["url"], currentdictionary, time)
+                    LoopThrough(tabs[x]["url"], time)
                 }
             }
             active=active2
@@ -328,11 +333,11 @@ function arrayEquals(a, b) {
                     duplicatecheck = false
                 }
                 x=x+1
+            }
             if (duplicatecheck==false){
                 return false
             } else {
                 return true
-            }
             }
         } else{
             return false
