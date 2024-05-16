@@ -8,10 +8,62 @@ document.getElementById('savechanges').addEventListener("click", SaveChanges)
 document.getElementById('option1main').addEventListener("click", ShowGroups)
 document.getElementById('option2main').addEventListener("click", ShowSchedule)
 
-      document.addEventListener('DOMContentLoaded', function() {
-        let calendar;
+let draggableEl = document.getElementById("drag")
+let draggable = new FullCalendar.Draggable(draggableEl,
+    {
+        eventData: {
+            id:'a',
+            title: 'my event',
+            duration: '01:00'
+          }
+    });
+
+
+
+const categorylist = {'social media' : ["instagram","twitter.com", "X.com", "facebook.com"]}
+grouplist = {}
+
+AddCategories()
+LoadState()
+function ClosePopup() {
+    document.getElementById("popup").style.visibility='hidden';
+    while (document.getElementById('groupelements').firstChild) {
+        document.getElementById('groupelements').removeChild(document.getElementById('groupelements').lastChild);
+    }
+    document.getElementById('groupname').value = ''
+}
+
+function OpenPopup() {
+    document.getElementById("popup").style.visibility='visible';
+}
+
+function ShowOption1() {
+    document.getElementById("option2display").style.display = 'none'
+    document.getElementById("option1display").style.display = 'flex'
+}
+
+function ShowOption2() {
+    document.getElementById("option2display").style.display = 'flex'
+    document.getElementById("option1display").style.display = 'none'
+}
+
+function ShowSchedule() {
+    document.getElementById('listofwebsites').style.display='none'
+    document.getElementById('calendarview').style.display='flex'
+    LoadDraggables()
+}
+
+function ShowGroups() {
+    document.getElementById('listofwebsites').style.display='flex'
+    document.getElementById('calendarview').style.display='none'
+    GetMenuTitles()
+}
+
+function AddCalendar(events) {
+    let calendar;
         var calendarEl = document.getElementById('calendar');
         calendar = new FullCalendar.Calendar(calendarEl, {
+            eventSources : [events],
             eventMouseEnter: function(info) {
                 info.el.style.borderStyle = 'solid';
                 info.el.style.borderColor = 'red';
@@ -48,56 +100,7 @@ document.getElementById('option2main').addEventListener("click", ShowSchedule)
         $(calendarEl).data('fullCalendarObj',calendar);
         calendar.render()
         globalThis.CalendarInstance = $('#calendar').data('fullCalendarObj');
-      });
-let draggableEl = document.getElementById("drag")
-let draggable = new FullCalendar.Draggable(draggableEl,
-    {
-        eventData: {
-            id:'a',
-            title: 'my event',
-            duration: '01:00'
-          }
-    });
-
-const categorylist = {'social media' : ["instagram","twitter.com", "X.com", "facebook.com"]}
-grouplist = {}
-
-AddCategories()
-
-function ClosePopup() {
-    document.getElementById("popup").style.visibility='hidden';
-    while (document.getElementById('groupelements').firstChild) {
-        document.getElementById('groupelements').removeChild(document.getElementById('groupelements').lastChild);
-    }
-    document.getElementById('groupname').value = ''
 }
-
-function OpenPopup() {
-    document.getElementById("popup").style.visibility='visible';
-}
-
-function ShowOption1() {
-    document.getElementById("option2display").style.display = 'none'
-    document.getElementById("option1display").style.display = 'flex'
-}
-
-function ShowOption2() {
-    document.getElementById("option2display").style.display = 'flex'
-    document.getElementById("option1display").style.display = 'none'
-}
-
-function ShowSchedule() {
-    document.getElementById('listofwebsites').style.display='none'
-    document.getElementById('calendarview').style.display='flex'
-    LoadDraggables()
-}
-
-function ShowGroups() {
-    document.getElementById('listofwebsites').style.display='flex'
-    document.getElementById('calendarview').style.display='none'
-    GetMenuTitles()
-}
-
 
 function AddWebsiteSpecific() {
     var websiteurl = document.getElementById("addwebsite").previousElementSibling.value.trim()
@@ -246,11 +249,27 @@ function SaveChanges() {
         x = x + 1
     }
     let events = CalendarInstance.getEvents()
-    console.log(events)
-    chrome.storage.local.set({'schedule': events})
+    let newevents = []
+    for (let y in events) {
+        newevents.push(CreateEventStorable(events[y]))
+    }
+    chrome.storage.local.set({'schedule': newevents})
     chrome.storage.local.set({'blockedgroupsschedule': blocked})
-    console.log(blocked)
+    console.log(newevents)
 }
+
+class Event {
+    constructor(start,end,title) {
+        this.start = start.toISOString();
+        this.end = end.toISOString();
+        this.title = title;
+    }
+}
+
+function CreateEventStorable(event) {
+    return new Event(event.start, event.end, event.title)
+}
+
 
 function GetGroupNames() {
     var groups2 = document.getElementsByClassName('groupname')
@@ -274,8 +293,13 @@ function LoadState() {
             x = x+1
         }
         LoadDraggables()
+        chrome.storage.local.get('schedule').then((events) => {
+            console.log(events)
+            AddCalendar(events["schedule"])
+        })
     })
 }
+
 
 function LoadDraggables() {
     // Load the titles of the draggable elements in the menu

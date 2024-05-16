@@ -14,7 +14,8 @@
     "permissions": [
       "tabs",
       "scripting",
-      "storage"
+      "storage",
+      "unlimitedStorage"
     ],
     "action": {
       "default_popup": "popup/popup.html",
