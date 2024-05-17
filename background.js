@@ -18,7 +18,7 @@ var date = Date.now()
 chrome.storage.local.set({"active": []})
 var list = [];
 chrome.storage.local.set({"blockedgroups" : []})
-let currentdictionary = {}
+globalThis.currentdictionary = {}
 chrome.storage.local.get("websiteusage").then((results) => {
     currentdictionary = results["websiteusage"]
 })
@@ -28,20 +28,15 @@ chrome.storage.local.get("websiteusage").then((results) => {
                 for (let x in tabs){
                     var blocked = false
                     chrome.storage.local.get("blocked").then((results) => {
-                        console.log(results["blocked"])
                         for (let y in results["blocked"]) {
                             if (Array.isArray(results["blocked"][y])) {
                                 for (let z in results["blocked"][y][1]) {
                                     if (tabs[x].url.includes(results["blocked"][y][1][z])) {
                                         blocked=true;
-                                        console.log(true)
                                     }
                                 }
                             } else {
                                 if (tabs[x].url.includes(results["blocked"][y])) {
-                                    console.log(results["blocked"][y])
-                                    console.log(tabs[x].url)
-                                    console.log(true)
                                     blocked=true;
                                 }
                             }
@@ -131,7 +126,6 @@ async function AudibleTabs() {
     let i = 0
     while (i<1000) {
         chrome.tabs.query({audible:true}, function(tabs) {
-            console.log(tabs)
             chrome.storage.local.get("blockedgroups").then((results)=> {
                 let blocked = CheckTimeLimits(results["blockedgroups"])
                 let audible2 = []
@@ -164,7 +158,6 @@ async function ActiveTab() {
             let blocked = CheckTimeLimits(results["blockedgroups"])
             let active2 = []
             var time = Date.now()
-            console.log(blocked)
             for (let x in tabs) {
                 CheckForBlocked(tabs[x]["url"], blocked, tabs[x].id)
                 active2.push(tabs[x]["url"])
@@ -184,7 +177,6 @@ async function ActiveTab() {
 ActiveTab()
 
 function CheckForBlocked(url, blocked, tabId) {
-    console.log(blocked)
     for (let x in blocked) {
         for (let o in blocked[x][1]) {
             if (Array.isArray(blocked[x][1][o])) {
@@ -210,8 +202,6 @@ function CheckForBlocked(url, blocked, tabId) {
 
 function CheckForLimited(url,currentdictionary) {
     if (url in currentdictionary) {
-        console.log(currentdictionary)
-        console.log(CheckTime(currentdictionary[url]))
     }
     return true
 }
@@ -253,10 +243,7 @@ function CheckTimeLimits(groups) {
                 }
             }
         }
-        console.log(sum)
-        console.log(groups[x][2])
         let diff = DifferenceOfTimes(groups[x][2],sum)
-        console.log(diff)
         if (arrayEquals(diff, [0,0,0])) {
             blockedgroups.push(groups[x])
         }
@@ -346,4 +333,82 @@ function arrayEquals(a, b) {
         return false
     }
 
+  }
+  let currentblockedt = []
+  let currentblockeds = []
+  async function TestingScheduleCheck() {
+    let x = 0
+    while (x < 1000) {
+        await sleep(1000)
+        chrome.storage.local.get("blockedgroupsschedule").then((results) => {
+            chrome.storage.local.get("schedule").then((schedule) => {
+                //console.log(schedule)
+                //console.log(results)
+                console.log(currentblockedt)
+                console.log(currentblockeds)
+                let r = CheckForSchedule(currentblockedt, results["blockedgroupsschedule"], schedule["schedule"])
+                currentblockedt = r[0]
+                currentblockeds = r[1]
+            })
+        })
+        x = x+1
+    }
+  }
+  TestingScheduleCheck()
+
+  function CheckForSchedule(currentblockedt,blockedgroupsschedule, schedule) {
+    let blocked = []
+    let currenttime = Date.now()
+    // Date.parse(isoDate) to turn ISO format dates Nov whatever into ms since 1970
+    for (let x in schedule) {
+        if (CompareTime(schedule[x], currenttime)) {
+            blocked.push(schedule[x].title)
+        }
+    }
+    let sitelist = []
+    for (let y in blockedgroupsschedule) {
+        // for each array of a group title and group of websites e.g ['social media', ['instagram.com', 'facebook.com']]
+        console.log(blockedgroupsschedule[y][1])
+        if (blocked.contains(blockedgroupsschedule[y][0])) {
+            console.log("yeah")
+            //if it is blocked
+            for (let z in blockedgroupsschedule[y][1]) {
+                if (Array.isArray(blockedgroupsschedule[y][1][z])) {
+                    for (let g in blockedgroupsschedule[y][1][z]) {
+                        sitelist.push(blockedgroupsschedule[y][1][z][g])
+                    }
+                } else {
+                    sitelist.push(blockedgroupsschedule[y][1][z])
+                }
+            }
+        }
+    }
+    if (!arrayEquals(blocked,currentblockedt)) {
+        return [blocked,sitelist]
+    } else {
+        return [currentblockedt,sitelist]
+    }
+
+  }
+
+  function CompareTime(object, current) {
+    // Note, object has object.start and object.end in ISO string format
+    // current has a date from Date.now in ms since 1970 Jan 1st midnight
+    let cdateobj = new Date(current)
+    let sdateobj = new Date(object.start)
+    let edateobj = new Date(object.end)
+    if (cdateobj.getDay()==sdateobj.getDay() && sdateobj.getHours()<=cdateobj.getHours()<=edateobj.getHours()) {
+        if (sdateobj.getHours==cdateobj.getHours && sdateobj.getMinutes()<=cdateobj.getMinutes()) {
+            return true
+        }
+        if (edateobj.getHours==cdateobj.getHours && edateobj.getMinutes()>=cdateobj.getMinutes()) {
+            return true
+        }
+        if (sdateobj.getHours()<cdateobj.getHours()<edateobj.getHours()) {
+            return true
+        }
+        return false
+    } else {
+        return false
+    }
   }
