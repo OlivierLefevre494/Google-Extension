@@ -18,7 +18,7 @@ var date = Date.now()
 chrome.storage.local.set({"active": []})
 var list = [];
 chrome.storage.local.set({"blockedgroups" : []})
-globalThis.currentdictionary = {}
+let currentdictionary = {}
 chrome.storage.local.get("websiteusage").then((results) => {
     currentdictionary = results["websiteusage"]
 })
@@ -344,8 +344,6 @@ function arrayEquals(a, b) {
             chrome.storage.local.get("schedule").then((schedule) => {
                 //console.log(schedule)
                 //console.log(results)
-                console.log(currentblockedt)
-                console.log(currentblockeds)
                 let r = CheckForSchedule(currentblockedt, results["blockedgroupsschedule"], schedule["schedule"])
                 currentblockedt = r[0]
                 currentblockeds = r[1]
@@ -368,9 +366,7 @@ function arrayEquals(a, b) {
     let sitelist = []
     for (let y in blockedgroupsschedule) {
         // for each array of a group title and group of websites e.g ['social media', ['instagram.com', 'facebook.com']]
-        console.log(blockedgroupsschedule[y][1])
-        if (blocked.contains(blockedgroupsschedule[y][0])) {
-            console.log("yeah")
+        if (blocked.includes(blockedgroupsschedule[y][0])) {
             //if it is blocked
             for (let z in blockedgroupsschedule[y][1]) {
                 if (Array.isArray(blockedgroupsschedule[y][1][z])) {

@@ -109,6 +109,11 @@ function AddWebsiteSpecific() {
 }
 
 function AddGroupElement(url) {
+    let c = false
+    if (Array.isArray(url)) {
+        url = url[0]
+        c = true
+    }
     var otherwebsiteurl = document.getElementsByClassName("websitenamepop")
     var duplicatecheck = false
     var x=0
@@ -130,6 +135,9 @@ function AddGroupElement(url) {
             var websiteurl = document.createElement('p')
             websiteurl.innerHTML = url
             websiteurl.classList.add('websitenamepop')
+            if (c) {
+                websiteurl.classList.add('cat')
+            }
             maindiv.appendChild(websiteurl)
             maindiv.appendChild(remove)
             grouparea.appendChild(maindiv)
@@ -152,7 +160,11 @@ function SubmitGroup() {
 
                 //get all website urls
                 while (x<document.getElementsByClassName("websitenamepop").length) {
-                    urllist.push(websiteurls[x].innerHTML)
+                    if (websiteurls[x].classList.contains("cat")) {
+                        urllist.push([websiteurls[x].innerHTML, 'c'])
+                    } else {
+                        urllist.push(websiteurls[x].innerHTML)
+                    }
                     x = x+1
                 }
                 index = -1
@@ -175,6 +187,7 @@ function SubmitGroup() {
                 while (document.getElementById('groupelements').firstChild) {
                     document.getElementById('groupelements').removeChild(document.getElementById('groupelements').lastChild);
                 }
+                console.log(grouplist)
         } else {
             //Throw error for not having set a group name
         }
@@ -201,7 +214,7 @@ function AddCategories() {
         bigdiv.appendChild(remove)
         bigdiv.appendChild(categorynames)
         bigdiv.addEventListener("click", function(bigdiv){
-            AddGroupElement(catname)
+            AddGroupElement([catname, 'c'])
         })
         categorybox.appendChild(bigdiv)
         x=x+1
@@ -244,10 +257,12 @@ function SaveChanges() {
     x = 0
     while (x<groupnames.length) {
         if (groupnames[x].trim()!='') {
-            blocked.push([groupnames[x], grouplist[groupnames[x]]])
+            let a  = FilterOut(grouplist[groupnames[x]])
+            blocked.push([groupnames[x], a])
         }
         x = x + 1
     }
+    console.log(blocked)
     let events = CalendarInstance.getEvents()
     let newevents = []
     for (let y in events) {
@@ -255,7 +270,6 @@ function SaveChanges() {
     }
     chrome.storage.local.set({'schedule': newevents})
     chrome.storage.local.set({'blockedgroupsschedule': blocked})
-    console.log(newevents)
 }
 
 class Event {
@@ -288,16 +302,44 @@ function LoadState() {
         while (x<results['blockedgroupsschedule'].length) {
             var currenttitle = results['blockedgroupsschedule'][x][0]
             var listofurls = results['blockedgroupsschedule'][x][1]
-            grouplist[currenttitle] = listofurls
+            console.log("Num1")
+            console.log(listofurls)
+            grouplist[currenttitle] = FilterIn(listofurls)
+            console.log(grouplist)
             AddGroupTitle(currenttitle, 0)
             x = x+1
         }
         LoadDraggables()
         chrome.storage.local.get('schedule').then((events) => {
-            console.log(events)
             AddCalendar(events["schedule"])
         })
     })
+}
+
+function FilterIn(listofurls) {
+    console.log(listofurls)
+    for (let x in listofurls) {
+        console.log(listofurls[x])
+        if (Array.isArray(listofurls[x])) {
+            console.log("yeah")
+            console.log(categorylist)
+            for (var key in categorylist){
+                if (arrayEquals(categorylist[key], listofurls[x])) {
+                    listofurls[x] = [key, 'c']
+                }
+            }
+        }
+    }
+    return listofurls
+}
+
+function FilterOut(listofurls) {
+    for (let x in listofurls) {
+        if (Array.isArray(listofurls[x])) {
+            listofurls[x] = categorylist[listofurls[x][0]]
+        }
+    }
+    return listofurls
 }
 
 
