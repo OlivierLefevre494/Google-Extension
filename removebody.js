@@ -1,3 +1,5 @@
-var element = document.getElementsByTagName("body");
-element[0].style.opacity=0
-console.log("done");
+
+    const blockPageUrl = chrome.runtime.getURL('blockpage/blockpage.html');
+    
+    window.location.href = blockPageUrl;
+

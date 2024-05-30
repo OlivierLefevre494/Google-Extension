@@ -20,5 +20,17 @@
     "action": {
       "default_popup": "popup/popup.html",
       "default_icon": "Hourglass_icon.png"
-    }
+    },
+    "web_accessible_resources": [
+      {
+          "resources": ["blockpage/blockpage.html", "blockpage/blockpage.css"],
+          "matches": ["<all_urls>"]
+      }
+  ],
+  "content_scripts": [
+      {
+          "matches": ["<all_urls>"],
+          "js": ["removebody.js"]
+      }
+    ]
   }
