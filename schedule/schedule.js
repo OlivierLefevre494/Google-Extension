@@ -239,6 +239,7 @@ function AddGroupTitle(value, index) {
     groupnamediv.addEventListener("click", function() {
         LoadPopUp(grouplist[value.trim()], value.trim())
       })
+    return null
 }
 
 function LoadPopUp(listofurls, grpname) {
@@ -298,16 +299,18 @@ function GetGroupNames() {
 
 function LoadState() {
     chrome.storage.local.get('blockedgroupsschedule').then((results) => {
-        x = 0
+        let x = 0
+        console.log(results)
+        console.log(results['blockedgroupsschedule'].length)
         while (x<results['blockedgroupsschedule'].length) {
+            console.log(x)
             var currenttitle = results['blockedgroupsschedule'][x][0]
             var listofurls = results['blockedgroupsschedule'][x][1]
-            console.log("Num1")
-            console.log(listofurls)
             grouplist[currenttitle] = FilterIn(listofurls)
-            console.log(grouplist)
-            AddGroupTitle(currenttitle, 0)
+            AddGroupTitle(currenttitle, -1)
             x = x+1
+            console.log(x)
+            console.log(results['blockedgroupsschedule'].length)
         }
         LoadDraggables()
         chrome.storage.local.get('schedule').then((events) => {
@@ -317,12 +320,9 @@ function LoadState() {
 }
 
 function FilterIn(listofurls) {
-    console.log(listofurls)
     for (let x in listofurls) {
         console.log(listofurls[x])
         if (Array.isArray(listofurls[x])) {
-            console.log("yeah")
-            console.log(categorylist)
             for (var key in categorylist){
                 if (arrayEquals(categorylist[key], listofurls[x])) {
                     listofurls[x] = [key, 'c']

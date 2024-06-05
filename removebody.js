@@ -1,5 +1,5 @@
 
-    const blockPageUrl = chrome.runtime.getURL('blockpage/blockpage.html');
+    let blockPageUrl = chrome.runtime.getURL('blockpage/blockpage.html');
     
     window.location.href = blockPageUrl;
 

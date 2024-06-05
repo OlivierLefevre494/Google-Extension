@@ -124,13 +124,14 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 let audible = []
 async function AudibleTabs() {
     let i = 0
-    while (i<1000) {
+    while (i<1000000000000000) {
         chrome.tabs.query({audible:true}, function(tabs) {
             chrome.storage.local.get("blockedgroups").then((results)=> {
                 let blocked = CheckTimeLimits(results["blockedgroups"])
                 let audible2 = []
                 var time = Date.now()
                 for (let x in tabs) {
+                    Redirect(tabs[x]["url"],currentblockeds,tabs[x].id)
                     CheckForBlocked(tabs[x]["url"], blocked, tabs[x].id)
                     if (tabs[x].active == false) {
                         if (!audible.includes(tabs[x])) {
@@ -152,13 +153,14 @@ AudibleTabs()
 let active = []
 async function ActiveTab() {
     let i = 0
-    while (i<1000) {
+    while (i<1000000000000000) {
         chrome.tabs.query({active:true}, function(tabs) {
             chrome.storage.local.get("blockedgroups").then((results)=> {
             let blocked = CheckTimeLimits(results["blockedgroups"])
             let active2 = []
             var time = Date.now()
             for (let x in tabs) {
+                Redirect(tabs[x]["url"],currentblockeds,tabs[x].id)
                 CheckForBlocked(tabs[x]["url"], blocked, tabs[x].id)
                 active2.push(tabs[x]["url"])
                 if (!active.includes(tabs[x]["url"])) {
@@ -175,6 +177,17 @@ async function ActiveTab() {
     }
 }
 ActiveTab()
+
+function Redirect(a,b,c){
+    for (let x in b) {
+        if (a.includes(b[x])) {
+            chrome.scripting.executeScript({
+                target: {tabId:c},
+                files:  ["removebody.js"]
+            }).then(() => console.log("script injected"))
+        }
+    }
+}
 
 function CheckForBlocked(url, blocked, tabId) {
     for (let x in blocked) {
@@ -336,14 +349,12 @@ function arrayEquals(a, b) {
   }
   let currentblockedt = []
   let currentblockeds = []
-  async function TestingScheduleCheck() {
+  async function ScheduleCheck() {
     let x = 0
-    while (x < 1000) {
+    while (x < 1000000000000000) {
         await sleep(1000)
         chrome.storage.local.get("blockedgroupsschedule").then((results) => {
             chrome.storage.local.get("schedule").then((schedule) => {
-                //console.log(schedule)
-                //console.log(results)
                 let r = CheckForSchedule(currentblockedt, results["blockedgroupsschedule"], schedule["schedule"])
                 currentblockedt = r[0]
                 currentblockeds = r[1]
@@ -352,7 +363,7 @@ function arrayEquals(a, b) {
         x = x+1
     }
   }
-  TestingScheduleCheck()
+ ScheduleCheck()
 
   function CheckForSchedule(currentblockedt,blockedgroupsschedule, schedule) {
     let blocked = []
@@ -394,13 +405,13 @@ function arrayEquals(a, b) {
     let sdateobj = new Date(object.start)
     let edateobj = new Date(object.end)
     if (cdateobj.getDay()==sdateobj.getDay() && sdateobj.getHours()<=cdateobj.getHours()<=edateobj.getHours()) {
-        if (sdateobj.getHours==cdateobj.getHours && sdateobj.getMinutes()<=cdateobj.getMinutes()) {
+        if (sdateobj.getHours()==cdateobj.getHours() && sdateobj.getMinutes()<=cdateobj.getMinutes()) {
             return true
         }
-        if (edateobj.getHours==cdateobj.getHours && edateobj.getMinutes()>=cdateobj.getMinutes()) {
+        if (edateobj.getHours()==cdateobj.getHours() && edateobj.getMinutes()>=cdateobj.getMinutes()) {
             return true
         }
-        if (sdateobj.getHours()<cdateobj.getHours()<edateobj.getHours()) {
+        if (sdateobj.getHours()<cdateobj.getHours() && cdateobj.getHours()<edateobj.getHours()) {
             return true
         }
         return false
